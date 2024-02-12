@@ -1,0 +1,8 @@
+pipelineElements:
+  - realFetching:
+    name: "Realtime Trade Fetch"
+    type: "fetch"
+    inputData: "none"
+    outputData: "ProductAggregate"
+  - pastFetching:
+    
