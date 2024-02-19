@@ -1,26 +1,19 @@
 package main
 
 import (
-	"context"
 	"time"
+	"worker-proto-01/job"
+	"worker-proto-01/pipeline"
 )
 
-type TradeFetch struct {
-}
-
-type ModelExecute struct {
-}
-
-type ResultAnalyzer struct {
-}
-
 func main() {
-	an := custom.CustomResultAnalyzerTest1{}
-	ctx, cancel := context.WithCancel(context.Background())
+	p := pipeline.NewPipeline(
+		job.NewGeneratorJob(),
+		job.NewMultiplyJob(2),
+		job.NewMultiplyJob(1),
+		job.NewPrintJob())
 
-	an.Analyze(ctx, make(chan any))
-
-	time.Sleep(time.Second * 5)
-	cancel()
+	p.Run()
 	time.Sleep(time.Second * 10)
+	p.Stop()
 }
