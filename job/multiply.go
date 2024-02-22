@@ -2,20 +2,21 @@ package job
 
 import (
 	"context"
+	"reflect"
 )
 
 type MultiplyJob struct {
 	Job
 
-	num int
+	num int `default:"1.0"`
 
-	in  chan any
-	out chan any
+	in  chan any `type:"int"`
+	out chan any `type:"int"`
 }
 
-func NewMultiplyJob(num int) *MultiplyJob {
+func NewMultiplyJob(userParams map[string]float32) *MultiplyJob {
 	return &MultiplyJob{
-		num: num,
+		num: int(userParams["mul"]),
 		out: make(chan any)}
 }
 
@@ -41,4 +42,16 @@ func (j *MultiplyJob) SetInput(input chan any) {
 
 func (j *MultiplyJob) Output() chan any {
 	return j.out
+}
+
+func (j MultiplyJob) InputTypeTag() string {
+	st := reflect.TypeOf(j)
+	field, _ := st.FieldByName("in")
+	return field.Tag.Get("type")
+}
+
+func (j MultiplyJob) OutputTypeTag() string {
+	st := reflect.TypeOf(j)
+	field, _ := st.FieldByName("out")
+	return field.Tag.Get("type")
 }

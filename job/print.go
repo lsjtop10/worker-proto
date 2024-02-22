@@ -5,8 +5,8 @@ import "context"
 type PrintJob struct {
 	Job
 
-	in  chan any
-	out chan any
+	in  chan any `type:int`
+	out chan any `type:null`
 }
 
 func NewPrintJob() *PrintJob {

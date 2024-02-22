@@ -9,12 +9,13 @@ import (
 type GeneratorJob struct {
 	Job
 
-	in  chan any
-	out chan any
+	in  chan any `type:"null"`
+	out chan any `type:"int"`
 }
 
 func NewGeneratorJob() *GeneratorJob {
-	return &GeneratorJob{out: make(chan any)}
+	return &GeneratorJob{
+		out: make(chan any)}
 }
 
 func (j *GeneratorJob) Execute(ctx context.Context, msg chan Message) (outMsg chan Message) {
