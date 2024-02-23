@@ -15,6 +15,7 @@ type MultiplyJob struct {
 }
 
 func NewMultiplyJob(userParams map[string]float32) *MultiplyJob {
+
 	return &MultiplyJob{
 		num: int(userParams["mul"]),
 		out: make(chan any)}

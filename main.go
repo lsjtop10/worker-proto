@@ -7,13 +7,28 @@ import (
 )
 
 func main() {
-	p := pipeline.NewPipeline(
+	p, err := pipeline.NewPipeline(
 		job.NewGeneratorJob(),
-		job.NewMultiplyJob(2),
-		job.NewMultiplyJob(1),
-		job.NewPrintJob())
+		job.NewMultiplyJob(job.UserParams{
+			"mul": 2.0,
+		}),
+		job.NewMultiplyJob(job.UserParams{
+			"mul": 3.0,
+		}),
+		job.NewPrintJob(),
+	)
+
+	if err != nil {
+		println(err)
+		return
+	}
 
 	p.Run()
-	time.Sleep(time.Second * 10)
+
+	time.Sleep(6 * time.Second)
+
 	p.Stop()
+
+	time.Sleep(1 * time.Second)
+
 }

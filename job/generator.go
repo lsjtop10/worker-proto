@@ -2,12 +2,13 @@ package job
 
 import (
 	"context"
-	"math/rand"
 	"time"
 )
 
 type GeneratorJob struct {
 	Job
+
+	data []int
 
 	in  chan any `type:"null"`
 	out chan any `type:"int"`
@@ -15,17 +16,18 @@ type GeneratorJob struct {
 
 func NewGeneratorJob() *GeneratorJob {
 	return &GeneratorJob{
-		out: make(chan any)}
+		data: []int{1, 2, 3, 4, 5},
+		out:  make(chan any)}
 }
 
 func (j *GeneratorJob) Execute(ctx context.Context, msg chan Message) (outMsg chan Message) {
 	go func() {
-		for i := 0; i < 5; i++ {
+		for _, data := range j.data {
 			select {
 			case <-ctx.Done():
 				return
 			default:
-				j.out <- (int)(rand.Float32() * 10)
+				j.out <- data
 				time.Sleep(time.Second * 1)
 			}
 		}
