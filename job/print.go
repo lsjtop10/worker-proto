@@ -19,7 +19,10 @@ func (j *PrintJob) Execute(ctx context.Context, msg chan Message) (outMsg chan M
 			select {
 			case <-ctx.Done():
 				return
-			case num := <-j.in:
+			case num, ok := <-j.in:
+				if !ok {
+					return
+				}
 				println(num.(int))
 			}
 		}

@@ -28,8 +28,12 @@ func (j *MultiplyJob) Execute(ctx context.Context, msg chan Message) (outMsg cha
 			select {
 			case <-ctx.Done():
 				return
-			case num := <-j.in:
+			case num, ok := <-j.in:
+				if !ok {
+					return
+				}
 				j.out <- num.(int) * j.num
+
 			}
 		}
 	}()
