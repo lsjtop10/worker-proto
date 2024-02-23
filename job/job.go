@@ -17,7 +17,7 @@ type Job interface {
 func InputTypeTag(job Job) string {
 	t := reflect.TypeOf(job).Elem()
 
-	//내부 구조를 참조하는 문제가 있음. 캡슐화 원칙에 어긋나서 문제가 생길 수도
+	//내부 구조를 참조하는 문제가 있음. 캡슐화 원칙에 어긋나서 문제가 생길 수도...
 	field, ok := t.FieldByName("in")
 	if !ok {
 		panic("cannot get 'in' field of " + t.String())
