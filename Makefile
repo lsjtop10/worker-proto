@@ -6,4 +6,4 @@ build: wire-job
 	go build .
 
 wire-job:
-	wire ./job-manager/inject/wire.go
+	wire ./job-manager/inject/wire.go 
