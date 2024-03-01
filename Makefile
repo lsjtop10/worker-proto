@@ -2,7 +2,7 @@
 run:
 	go run main.go
 
-build:
+build: wire-job
 	go build .
 
 wire-job:
