@@ -7,7 +7,7 @@ type taggedProvider struct {
 	Provider JobProvider
 }
 
-// 여기에서 tag와 provider의 관계를 정의한다.
+// 여기에서 provider에 tag를 지정한다.
 var managedJobs = []taggedProvider{
 	{
 		map[string]string{
