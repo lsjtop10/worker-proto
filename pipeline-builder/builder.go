@@ -17,6 +17,7 @@ type PipelineBuilder struct {
 
 	fetchJob     job.Job
 	modelExecJob job.Job
+	adaptJob     job.Job
 	resDecodeJob job.Job
 	transmitJob  job.Job
 }
@@ -36,6 +37,7 @@ func (b *PipelineBuilder) Build(opts PipelineOpts, UserParams map[string]float32
 	return pipeline.NewPipeline(
 		b.fetchJob,
 		b.modelExecJob,
+		b.adaptJob,
 		b.resDecodeJob,
 		b.transmitJob,
 	)

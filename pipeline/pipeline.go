@@ -11,6 +11,7 @@ var ErrTypeNotMatch = errors.New("pipeline: cannot build a pipeline because the 
 type Pipeline struct {
 	fetch      job.Job
 	modelExec  job.Job
+	adapt      job.Job
 	resAnalyze job.Job
 	transmit   job.Job
 
@@ -18,18 +19,12 @@ type Pipeline struct {
 	cancel context.CancelFunc
 }
 
-func NewPipeline(fetch, modelExec, resAnalyze, transmit job.Job) (*Pipeline, error) {
-
-	if !(isTypeCompatible(fetch, modelExec) &&
-		isTypeCompatible(modelExec, resAnalyze) &&
-		isTypeCompatible(resAnalyze, transmit)) {
-
-		return nil, ErrTypeNotMatch
-	}
+func NewPipeline(fetch, modelExec, adapt, resAnalyze, transmit job.Job) (*Pipeline, error) {
 
 	return &Pipeline{
 		fetch:      fetch,
 		modelExec:  modelExec,
+		adapt:      adapt,
 		resAnalyze: resAnalyze,
 		transmit:   transmit,
 	}, nil
@@ -53,15 +48,4 @@ func (p *Pipeline) Run() {
 
 func (p *Pipeline) Stop() {
 	p.cancel()
-}
-
-func isTypeCompatible(prev, next job.Job) bool {
-
-	// 다음 job의 입력 타입이 any이거나
-	// 이전 job의 출력 타입과 다음 job의 출력 타입이 같고
-	// 이전 job의 출력 타입과 다음 job의 타입의 입력 타입이 모두 Null이 아닌지 검사
-	return job.InputTypeTag(next) == "any" ||
-		(job.OutputTypeTag(prev) == job.InputTypeTag(next)) &&
-			!(job.OutputTypeTag(prev) == "null" || job.InputTypeTag(next) == "null")
-
 }
