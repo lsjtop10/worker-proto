@@ -8,6 +8,7 @@ import (
 
 var ErrTypeNotMatch = errors.New("pipeline: cannot build a pipeline because the types are not compatible between the jobs")
 
+// 아키텍처 설계 상 이 구조는 변경되면 안 된다.
 type Pipeline struct {
 	fetch      job.Job
 	modelExec  job.Job
@@ -19,7 +20,7 @@ type Pipeline struct {
 	cancel context.CancelFunc
 }
 
-func NewPipeline(fetch, modelExec, adapt, resAnalyze, transmit job.Job) (*Pipeline, error) {
+func newPipeline(fetch, modelExec, adapt, resAnalyze, transmit job.Job) (*Pipeline, error) {
 
 	return &Pipeline{
 		fetch:      fetch,
@@ -32,17 +33,17 @@ func NewPipeline(fetch, modelExec, adapt, resAnalyze, transmit job.Job) (*Pipeli
 
 func (p *Pipeline) Run() {
 	p.ctx, p.cancel = context.WithCancel(context.Background())
-	//TODO: 하나의 컴포넌트에서 발생한 메시지를 다른 데에 전달하는 좋은 방법 개발
-	msg := make(chan job.Message)
+	//TODO: 하나의 컴포넌트에서 발행한 메시지를
 
-	p.modelExec.SetInput(p.fetch.Output())
-	p.resAnalyze.SetInput(p.modelExec.Output())
-	p.transmit.SetInput(p.resAnalyze.Output())
+	p.modelExec.SetInputChan(p.fetch.OutputChan())
+	p.resAnalyze.SetInputChan(p.modelExec.OutputChan())
+	p.transmit.SetInputChan(p.resAnalyze.OutputChan())
 
-	p.fetch.Execute(p.ctx, msg)
-	p.modelExec.Execute(p.ctx, msg)
-	p.resAnalyze.Execute(p.ctx, msg)
-	p.transmit.Execute(p.ctx, msg)
+	p.fetch.Execute(p.ctx)
+	p.modelExec.Execute(p.ctx)
+	p.adapt.Execute(p.ctx)
+	p.resAnalyze.Execute(p.ctx)
+	p.transmit.Execute(p.ctx)
 
 }
 
